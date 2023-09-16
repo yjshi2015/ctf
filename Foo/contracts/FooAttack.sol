@@ -57,7 +57,7 @@ contract Helper {
                     salt,
                     keccak256(type(FooAttack).creationCode)
                 )))));
-            // console.log("predictedAddress: ", predictedAddress);哈哈哈哈
+            // console.log("predictedAddress: ", predictedAddress);哈哈哈哈ad
             if(uint256(uint160(predictedAddress)) % 1000 == 137) {
                 console.log(i, " times ok, the correct address is: ", predictedAddress);
                 return salt ;
