@@ -72,3 +72,27 @@ contract Helper {
         revert NotFound();
     }
 }
+
+contract FooMock {
+    address who;
+    mapping (uint256 => mapping (address => bool)) stats;
+
+    constructor() {}
+
+    function setup(uint step, address who) external {
+        stats[step][who] = true;
+    }
+
+    //获取account中指定key的槽位，按照keccak256(h(k) . p)的逻辑获取slot
+    function getSlot(uint firstKey, address secondKey) external view returns (uint) {
+        uint firstSlot = uint(keccak256(abi.encode(uint256(firstKey), uint256(1))));
+        uint secondSlot = uint(keccak256(abi.encode(address(secondKey), firstSlot)));
+        return secondSlot;
+    }
+
+    function getValBySlot(uint slot) public view returns (bool val) {
+        assembly {
+            val := mload(slot)
+        }
+    }
+}
