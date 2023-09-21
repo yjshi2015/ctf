@@ -73,18 +73,24 @@ contract Helper {
     }
 }
 
+/**
+ * @title 构造跟原合约同样的布局，以及相同的state variable及值，进而推算出原始合约某个
+ * state variable的slot，曲线救国~
+ * @author 
+ * @notice 
+ */
 contract FooMock {
     address who;
     mapping (uint256 => mapping (address => bool)) stats;
 
     constructor() {}
 
-    function setup(uint step, address who) external {
-        stats[step][who] = true;
+    function setup(uint step, address _who) external {
+        stats[step][_who] = true;
     }
 
     //获取account中指定key的槽位，按照keccak256(h(k) . p)的逻辑获取slot
-    function getSlot(uint firstKey, address secondKey) external view returns (uint) {
+    function getSlot(uint firstKey, address secondKey) external pure returns (uint) {
         uint firstSlot = uint(keccak256(abi.encode(uint256(firstKey), uint256(1))));
         uint secondSlot = uint(keccak256(abi.encode(address(secondKey), firstSlot)));
         return secondSlot;
@@ -92,7 +98,7 @@ contract FooMock {
 
     function getValBySlot(uint slot) public view returns (bool val) {
         assembly {
-            val := mload(slot)
+            val := sload(slot)
         }
     }
 }
